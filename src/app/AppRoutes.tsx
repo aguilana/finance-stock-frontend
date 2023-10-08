@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { RootState, useAppSelector } from '../redux/store';
 import ProtectedRoutes from './ProtectedRoutes';
-import { AuthForm, Profile, Dashboard } from '../pages';
+import { AuthForm, Profile, Dashboard, StockList } from '../pages';
 
 const AppRoutes = () => {
   const { user } = useAppSelector((state: RootState) => state.auth);
@@ -24,6 +24,7 @@ const AppRoutes = () => {
         <Route path='/my-profile' element={<Profile />} />
         <Route path='/dashboard' element={<Dashboard />} />
       </Route>
+      <Route path='/stocks' element={<StockList />} />
       <Route path='*' element={<h1>404 Error - Not Found</h1>} />
     </Routes>
   );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getAllStocks } from '../../../redux/features/stocksSlice';
+// import { getAllStocks } from '../../../redux/features/stocksSlice';
 import {
   RootState,
   useAppDispatch,
@@ -27,20 +27,20 @@ interface Stock {
 }
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state: RootState) => state.auth);
-  const { allStocks } = useAppSelector((state: RootState) => state.stocks);
-  useEffect(() => {
-    dispatch(getAllStocks());
-  }, [dispatch]);
+  // const dispatch = useAppDispatch();
+  // const { user } = useAppSelector((state: RootState) => state.auth);
+  // const { allStocks } = useAppSelector((state: RootState) => state.stocks);
+  // useEffect(() => {
+  //   dispatch(getAllStocks());
+  // }, [dispatch]);
 
-  console.log('ALL STOCKS IN DASHBOARD', allStocks);
+  // console.log('ALL STOCKS IN DASHBOARD', allStocks);
 
   return (
     <div>
-      <h1>Dashboard for {user?.displayName}</h1>
+      {/* <h1>Dashboard for {user?.displayName}</h1> */}
       <h2> All your stocks </h2>
-      <ul>
+      {/* <ul>
         {allStocks?.map((stock: any) => (
           <li key={stock.id} className='py-4'>
             <p>
@@ -49,7 +49,7 @@ const Dashboard = () => {
             <p>Quantity: {stock?.userPortfolio.quantity}</p>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

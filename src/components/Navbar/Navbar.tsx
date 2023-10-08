@@ -24,6 +24,9 @@ const Navbar = () => {
             <li>
               <Link to='/'> Home </Link>
             </li>
+            <li>
+              <Link to='/stocks'> Stocks </Link>
+            </li>
             {user !== null ? (
               <>
                 <li>
