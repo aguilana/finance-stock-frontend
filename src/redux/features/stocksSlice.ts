@@ -13,30 +13,38 @@ const initialState: StockState = {
   error: null,
 };
 
-// export const getAllStocks = createAsyncThunk('stocks/getAll', async () => {
-//   const token = localStorage.getItem('token');
-//   console.log('token in frontend!!!!', token);
-//   try {
-//     const { data } = await axios.get(`${API_ENDPOINT}/stocks`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     console.log('----------------------------------------------');
-//     console.log('data COMING FROM THE BACKEND!!!', data);
-//     console.log('----------------------------------------------');
-
-//     return data;
-//   } catch (error) {
-//     return error;
-//   }
-// });
-
 export const getStockList = createAsyncThunk(
   'stocks/getStockList',
   async () => {
     try {
       const { data } = await axios.get(`${API_ENDPOINT}/stocks/list`);
+      console.log('data in slice', data);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
+);
+
+export const getHistoricalPriceOfStock = createAsyncThunk(
+  'stocks/getHistoricalPriceOfStock',
+  async (symbol: string) => {
+    try {
+      const { data } = await axios.get(
+        `${API_ENDPOINT}/stocks/historicalPrices/${symbol}`
+      );
+      return data;
+    } catch (error) {
+      return error;
+    }
+  }
+);
+
+export const getLatestPriceOfAllStocks = createAsyncThunk(
+  'stocks/getLatestPriceOfAllStocks',
+  async () => {
+    try {
+      const { data } = await axios.get(`${API_ENDPOINT}/stocks/latest`);
       return data;
     } catch (error) {
       return error;
@@ -49,17 +57,6 @@ const stockSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // builder.addCase(getAllStocks.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getAllStocks.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.allStocks = action.payload;
-    // });
-    // builder.addCase(getAllStocks.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.error;
-    // });
     builder.addCase(getStockList.pending, (state) => {
       state.isLoading = true;
     });
@@ -68,6 +65,17 @@ const stockSlice = createSlice({
       state.allStocks = action.payload;
     });
     builder.addCase(getStockList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+    builder.addCase(getHistoricalPriceOfStock.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getHistoricalPriceOfStock.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.allStocks = action.payload;
+    });
+    builder.addCase(getHistoricalPriceOfStock.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.error;
     });

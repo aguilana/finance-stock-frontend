@@ -89,8 +89,8 @@ export const loginUser = createAsyncThunk<
 // Async thunk for signing out
 export const logoutUser = createAsyncThunk('auth/signOut', async () => {
   try {
-    signOut(auth);
     localStorage.removeItem('token'); // Clear token from localStorage
+    signOut(auth);
     return null; // This will be sent as the action payload on success (user is null)
   } catch (error) {
     throw error; // This will trigger the rejection action
