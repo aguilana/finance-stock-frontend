@@ -9,9 +9,13 @@ import { IndividualStock } from '../../../components';
 const StockList = () => {
   const [filter, setFilter] = useState('NONE');
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const stocksPerPage = 15;
 
   const dispatch = useAppDispatch();
-  const { allStocks } = useAppSelector((state: RootState) => state.stocks);
+  const { allStocks, isLoading, error } = useAppSelector(
+    (state: RootState) => state.stocks
+  );
 
   useEffect(() => {
     dispatch(getStockList());
@@ -34,31 +38,50 @@ const StockList = () => {
     displayedStocks.sort((a, b) => a.symbol.localeCompare(b.symbol));
   }
 
-  // // Filter by price
-  // if (filter === 'PRICE H-L') {
-  //   displayedStocks.sort((a, b) => b.latestPrice - a.latestPrice);
-  // }
+  // Filter by price
+  if (filter === 'PRICE H-L') {
+    displayedStocks.sort((a, b) => b.latestPrice - a.latestPrice);
+  }
 
-  // if (filter === 'PRICE L-H') {
-  //   displayedStocks.sort((a, b) => a.latestPrice - b.latestPrice);
-  // }
+  if (filter === 'PRICE L-H') {
+    displayedStocks.sort((a, b) => a.latestPrice - b.latestPrice);
+  }
+
+  const indexOfLastStock = currentPage * stocksPerPage;
+  const indexOfFirstStock = indexOfLastStock - stocksPerPage;
+  let currentStocks = displayedStocks.slice(
+    indexOfFirstStock,
+    indexOfLastStock
+  );
 
   // Apply search filter
   if (search) {
-    displayedStocks = displayedStocks.filter(
+    currentStocks = displayedStocks.filter(
       (stock) =>
         stock.name.toLowerCase().includes(search.toLowerCase()) ||
         stock.symbol.toLowerCase().includes(search.toLowerCase())
     );
   }
 
+  const handleNext = () => {
+    if (currentPage < Math.ceil(displayedStocks.length / stocksPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className='flex flex-col items-center px-4 w-full'>
       <h1 className='text-3xl font-bold'>
         Stock List (
-        {/* {allStocks &&
+        {allStocks &&
           stocksWithNoLatestPrice &&
-          allStocks?.length - stocksWithNoLatestPrice?.length} */}
+          allStocks?.length - stocksWithNoLatestPrice?.length}
         )
       </h1>
 
@@ -70,8 +93,8 @@ const StockList = () => {
             <option value='NONE'>None</option>
             <option value='ALPHABET'>Alphabetical</option>
             <option value='SYMBOL'>Symbol</option>
-            {/* <option value='PRICE H-L'>Price (High to Low)</option>
-            <option value='PRICE L-H'>Price (Low to High)</option> */}
+            <option value='PRICE H-L'>Price (High to Low)</option>
+            <option value='PRICE L-H'>Price (Low to High)</option>
           </select>
         </label>
         <label>
@@ -87,8 +110,24 @@ const StockList = () => {
 
       {/* component to search the stock list */}
       <ul className='grid grid-cols-3 p-2 gap-2 w-full'>
-        <IndividualStock allStocks={displayedStocks || []} />
+        <IndividualStock
+          allStocks={currentStocks || []}
+          isLoading={isLoading}
+        />
       </ul>
+      <div>
+        <button onClick={handlePrev} disabled={currentPage === 1}>
+          Prev
+        </button>
+        <button
+          onClick={handleNext}
+          disabled={
+            currentPage === Math.ceil(displayedStocks.length / stocksPerPage)
+          }
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
